@@ -8,10 +8,14 @@ EcoTrace helps individuals understand, track, reduce, and improve their climate 
 
 [![React](https://img.shields.io/badge/React-19-01696f?style=for-the-badge&labelColor=081814)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-2f7d45?style=for-the-badge&labelColor=081814)](https://vite.dev/)
-[![Tests](https://img.shields.io/badge/Tests-10%2F10%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
+[![Tests](https://img.shields.io/badge/Tests-11%2F11%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
 [![Charts](https://img.shields.io/badge/Charts-Hand%20Built-477a9f?style=for-the-badge&labelColor=081814)](#visual-system)
 
 `Duolingo x Fitbit x Stripe Dashboard x climate action coaching`
+
+<br />
+
+<img src="./assets/readme/ecotrace-showcase.svg" alt="Animated EcoTrace dashboard preview showing the carbon score, weekly trend, heatmap, tasks, and rewards" width="100%">
 
 </div>
 
@@ -43,6 +47,14 @@ EcoTrace is designed as a premium climate-tech dashboard, not a static calculato
 | Tips | Personalized recommendations, filters, effort-vs-impact matrix, done state, and linked actions. |
 | Profile | Level, XP, score, streak summary, badges, achievements, timeline, favorite habit, next unlock, and challenge history. |
 
+## Product Loop
+
+EcoTrace is built around a daily loop: log a real action, calculate its footprint, get personalized coaching, repeat the habit, and earn visible progress.
+
+<p align="center">
+  <img src="./assets/readme/product-loop.svg" alt="Animated EcoTrace product loop from logging to calculation, coaching, habit repetition, and rewards" width="100%">
+</p>
+
 ## Visual System
 
 EcoTrace uses a calm "living earth" design language: deep forest surfaces, warm earth neutrals, clean white cards, emerald teal accents, and restrained motion.
@@ -56,6 +68,10 @@ EcoTrace uses a calm "living earth" design language: deep forest surfaces, warm 
 | Accessibility | Semantic HTML, skip link, keyboard navigation, focus-visible states, aria labels, progress semantics, dark mode, reduced motion support. |
 
 All major data visualizations are hand-built with SVG, CSS, or inline UI logic. No charting framework is used.
+
+<p align="center">
+  <img src="./assets/readme/heatmap-showcase.svg" alt="Animated EcoTrace activity heatmap block showcase with month labels and hover coaching tooltip" width="100%">
+</p>
 
 ## Core Systems
 

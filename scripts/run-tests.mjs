@@ -122,6 +122,19 @@ test('site metadata and success mark are polished', () => {
   assert.ok(legacyHtml.includes('transform: translateY(0);'), 'success mark SVG should not sit on a text baseline');
 });
 
+test('README includes animated product showcase assets', () => {
+  const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  [
+    './assets/readme/ecotrace-showcase.svg',
+    './assets/readme/heatmap-showcase.svg',
+    './assets/readme/product-loop.svg'
+  ].forEach((asset) => {
+    assert.ok(readme.includes(asset), `${asset} should be referenced in README`);
+    const svg = readFileSync(new URL(`..${asset.slice(1)}`, import.meta.url), 'utf8');
+    assert.ok(svg.includes('@keyframes') || svg.includes('<animate'), `${asset} should contain animation`);
+  });
+});
+
 let passed = 0;
 for (const item of tests) {
   try {
