@@ -8,7 +8,7 @@ EcoTrace helps individuals understand, track, reduce, and improve their climate 
 
 [![React](https://img.shields.io/badge/React-19-01696f?style=for-the-badge&labelColor=081814)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-2f7d45?style=for-the-badge&labelColor=081814)](https://vite.dev/)
-[![Tests](https://img.shields.io/badge/Tests-11%2F11%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
+[![Tests](https://img.shields.io/badge/Tests-13%2F13%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
 [![Charts](https://img.shields.io/badge/Charts-Hand%20Built-477a9f?style=for-the-badge&labelColor=081814)](#visual-system)
 
 `Duolingo x Fitbit x Stripe Dashboard x climate action coaching`
@@ -159,6 +159,24 @@ Test:
 npm test
 ```
 
+## Deploy To GitHub Pages
+
+EcoTrace is ready for GitHub Pages through the included workflow at `.github/workflows/deploy-pages.yml`.
+
+1. Push `main` to GitHub.
+2. Open the repository on GitHub.
+3. Go to `Settings` -> `Pages`.
+4. Under `Build and deployment`, set `Source` to `GitHub Actions`.
+5. Open the `Actions` tab and run or wait for `Deploy EcoTrace to GitHub Pages`.
+
+After the workflow finishes, the hosted app will be available at:
+
+```text
+https://yawarquil.github.io/EcoTrace/
+```
+
+GitHub Pages is static hosting, so the Gemini proxy endpoints do not run there. EcoTrace still works because AI insights and chat fall back to local coaching when the API is unavailable.
+
 ## Environment
 
 Create a local environment file:
@@ -191,7 +209,7 @@ Latest local check:
 
 ```text
 npm test
-10/10 tests passed
+13/13 tests passed
 
 npm run build
 build completed successfully
