@@ -8,7 +8,7 @@ EcoTrace helps individuals understand, track, reduce, and improve their climate 
 
 [![React](https://img.shields.io/badge/React-19-01696f?style=for-the-badge&labelColor=081814)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-2f7d45?style=for-the-badge&labelColor=081814)](https://vite.dev/)
-[![Tests](https://img.shields.io/badge/Tests-13%2F13%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
+[![Tests](https://img.shields.io/badge/Tests-14%2F14%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
 [![Charts](https://img.shields.io/badge/Charts-Hand%20Built-477a9f?style=for-the-badge&labelColor=081814)](#visual-system)
 
 `Duolingo x Fitbit x Stripe Dashboard x climate action coaching`
@@ -159,23 +159,27 @@ Test:
 npm test
 ```
 
-## Deploy To GitHub Pages
+## Deploy To Railway
 
-EcoTrace is ready for GitHub Pages through the included workflow at `.github/workflows/deploy-pages.yml`.
+EcoTrace is ready for Railway through `railway.json`. Railway builds the app with `npm run build`, then serves the production bundle with `npm run start` on Railway's provided `$PORT`.
 
 1. Push `main` to GitHub.
-2. Open the repository on GitHub.
-3. Go to `Settings` -> `Pages`.
-4. Under `Build and deployment`, set `Source` to `GitHub Actions`.
-5. Open the `Actions` tab and run or wait for `Deploy EcoTrace to GitHub Pages`.
+2. Open Railway and create a new project.
+3. Choose `Deploy from GitHub repo`.
+4. Select `yawarquil/EcoTrace`.
+5. In the Railway service, open `Variables`.
+6. Add `GEMINI_API_KEY` if live EcoTrace AI responses are desired.
+7. Open `Settings` -> `Networking`.
+8. Click `Generate Domain` to get the public app URL.
 
-After the workflow finishes, the hosted app will be available at:
+Railway runs a server process, so the Gemini proxy endpoints can work in production:
 
 ```text
-https://yawarquil.github.io/EcoTrace/
+/api/gemini-insights
+/api/gemini-chat
 ```
 
-GitHub Pages is static hosting, so the Gemini proxy endpoints do not run there. EcoTrace still works because AI insights and chat fall back to local coaching when the API is unavailable.
+If `GEMINI_API_KEY` is missing or the Gemini API is unavailable, EcoTrace still falls back to local coaching responses.
 
 ## Environment
 
@@ -203,13 +207,14 @@ Current regression coverage verifies:
 - small UI controls update in place instead of forcing unnecessary full rerenders
 - XP task completion preserves the floating reward toast
 - site metadata, title, favicon, and success mark polish are present
+- Railway deployment config is present and the old static workflow is removed
 - production build completes successfully
 
 Latest local check:
 
 ```text
 npm test
-13/13 tests passed
+14/14 tests passed
 
 npm run build
 build completed successfully
