@@ -1,13 +1,13 @@
-import { createInitialState, STORAGE_VERSION } from './core.js';
+import { createInitialState, STORAGE_VERSION } from "./core.js";
 
-export const STORAGE_KEY = 'ecotrace.react.state.v3';
+export const STORAGE_KEY = "ecotrace.react.state.v3";
 export { STORAGE_VERSION };
 
 export function serializeState(state) {
   return JSON.stringify({
     version: STORAGE_VERSION,
     savedAt: new Date().toISOString(),
-    state
+    state,
   });
 }
 
@@ -20,8 +20,12 @@ export function mergeState(base, saved) {
     goals: Array.isArray(saved.goals) ? saved.goals : base.goals,
     habits: Array.isArray(saved.habits) ? saved.habits : base.habits,
     entries: Array.isArray(saved.entries) ? saved.entries : base.entries,
-    completedWeeklyPlan: Array.isArray(saved.completedWeeklyPlan) ? saved.completedWeeklyPlan : base.completedWeeklyPlan,
-    reflections: Array.isArray(saved.reflections) ? saved.reflections : base.reflections
+    completedWeeklyPlan: Array.isArray(saved.completedWeeklyPlan)
+      ? saved.completedWeeklyPlan
+      : base.completedWeeklyPlan,
+    reflections: Array.isArray(saved.reflections)
+      ? saved.reflections
+      : base.reflections,
   };
 }
 

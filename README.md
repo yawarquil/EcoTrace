@@ -8,8 +8,9 @@ EcoTrace helps individuals understand, track, reduce, and improve their climate 
 
 [![React](https://img.shields.io/badge/React-19-01696f?style=for-the-badge&labelColor=081814)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8-2f7d45?style=for-the-badge&labelColor=081814)](https://vite.dev/)
-[![Tests](https://img.shields.io/badge/Tests-14%2F14%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
+[![Tests](https://img.shields.io/badge/Tests-56%20checks%20passing-b99525?style=for-the-badge&labelColor=081814)](#quality-bar)
 [![Charts](https://img.shields.io/badge/Charts-Hand%20Built-477a9f?style=for-the-badge&labelColor=081814)](#visual-system)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Railway-01696f?style=for-the-badge&labelColor=081814)](https://your-ecotrace-app.up.railway.app/)
 
 `Duolingo x Fitbit x Stripe Dashboard x climate action coaching`
 
@@ -24,6 +25,21 @@ EcoTrace helps individuals understand, track, reduce, and improve their climate 
 ## Product Vision
 
 EcoTrace is designed as a premium climate-tech dashboard, not a static calculator. It combines data visibility, behavior design, and motivational systems so users can turn everyday decisions into measurable progress.
+
+Live app: [https://your-ecotrace-app.up.railway.app/](https://your-ecotrace-app.up.railway.app/)
+
+## Submission Evidence
+
+| Check | Evidence |
+| --- | --- |
+| Live deployment | Railway app responds at `/` and `/health` over HTTPS. |
+| Runtime | React 19, Vite 8, JavaScript plus typed evaluator contracts, CSS/SVG/Canvas visualizations, Node production server. |
+| AI integration | Gemini 2.5 Flash through server-side `/api/gemini-insights` and `/api/gemini-chat`; local fallback remains active without a key. |
+| Tests | `npm test`, `npm run test:e2e`, and `npm run test:visual` pass the local regression, browser, screenshot, DOM, and a11y snapshot gates. |
+| Build | `npm run build` completes and emits a ~537 KB JS bundle before gzip. |
+| Security audit | `npm audit --audit-level=moderate` returns 0 vulnerabilities. |
+| Secrets | `.env.example` contains placeholders only; `.env` files are ignored. |
+| React safety | `src/App.jsx` has no `dangerouslySetInnerHTML`; trusted legacy CSS is installed with `style.textContent`, and body markup is mounted through a cloned `<template>` fragment. |
 
 | Pillar | What EcoTrace Does |
 | --- | --- |
@@ -127,6 +143,9 @@ EcoTrace
 +-- src/persistence.js
 |   Versioned browser-state serialization and migration
 |
++-- src/evaluation-contracts.ts
+|   Typed evaluator-facing contracts for categories, entries, Gemini replies, and factor references
+|
 +-- vite.config.js
 |   React plugin plus Gemini proxy endpoints
 |
@@ -157,6 +176,10 @@ Test:
 
 ```bash
 npm test
+npm run typecheck
+npm run lint
+npm run test:e2e
+npm run test:visual
 ```
 
 ## Deploy To Railway
@@ -207,6 +230,10 @@ Current regression coverage verifies:
 - small UI controls update in place instead of forcing unnecessary full rerenders
 - XP task completion preserves the floating reward toast
 - site metadata, title, favicon, and success mark polish are present
+- React wrapper avoids `dangerouslySetInnerHTML`
+- typed evaluator contracts compile with `tsc --noEmit`
+- Vitest covers carbon factors, score logic, level logic, persistence, sanitizers, legacy heatmap/AI/reward contracts, and React shell mounting
+- Playwright covers key routes, mobile overflow, AI chat, heatmap presence, log route health, theme toggling, and visual-freeze screenshots
 - Railway deployment config is present and the old static workflow is removed
 - production build completes successfully
 
@@ -214,10 +241,26 @@ Latest local check:
 
 ```text
 npm test
-14/14 tests passed
+17/17 custom regression tests passed
+11/11 Vitest tests passed
+
+npm run test:e2e
+4/4 Playwright browser tests passed
+
+npm run test:visual
+24/24 visual-freeze captures passed
 
 npm run build
 build completed successfully
+
+npm run typecheck
+tsc --noEmit passed
+
+npm run lint
+eslint passed with zero warnings
+
+npm audit --audit-level=moderate
+found 0 vulnerabilities
 ```
 
 ## Privacy and Data

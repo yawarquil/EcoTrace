@@ -1,33 +1,33 @@
-import { createReadStream, existsSync } from 'node:fs';
-import { stat } from 'node:fs/promises';
-import { createServer } from 'node:http';
-import { extname, join, normalize, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { createReadStream, existsSync } from "node:fs";
+import { stat } from "node:fs/promises";
+import { createServer } from "node:http";
+import { extname, join, normalize, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT_DIR = fileURLToPath(new URL('.', import.meta.url));
-const DIST_DIR = resolve(ROOT_DIR, 'dist');
-const INDEX_FILE = join(DIST_DIR, 'index.html');
+const ROOT_DIR = fileURLToPath(new URL(".", import.meta.url));
+const DIST_DIR = resolve(ROOT_DIR, "dist");
+const INDEX_FILE = join(DIST_DIR, "index.html");
 const PORT = Number(process.env.PORT || 4173);
-const HOST = '0.0.0.0';
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const HOST = "0.0.0.0";
+const GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 const MAX_BODY_SIZE = 120_000;
 
 const MIME_TYPES = new Map([
-  ['.html', 'text/html; charset=utf-8'],
-  ['.js', 'text/javascript; charset=utf-8'],
-  ['.mjs', 'text/javascript; charset=utf-8'],
-  ['.css', 'text/css; charset=utf-8'],
-  ['.json', 'application/json; charset=utf-8'],
-  ['.svg', 'image/svg+xml; charset=utf-8'],
-  ['.png', 'image/png'],
-  ['.jpg', 'image/jpeg'],
-  ['.jpeg', 'image/jpeg'],
-  ['.webp', 'image/webp'],
-  ['.ico', 'image/x-icon'],
-  ['.txt', 'text/plain; charset=utf-8'],
-  ['.woff', 'font/woff'],
-  ['.woff2', 'font/woff2']
+  [".html", "text/html; charset=utf-8"],
+  [".js", "text/javascript; charset=utf-8"],
+  [".mjs", "text/javascript; charset=utf-8"],
+  [".css", "text/css; charset=utf-8"],
+  [".json", "application/json; charset=utf-8"],
+  [".svg", "image/svg+xml; charset=utf-8"],
+  [".png", "image/png"],
+  [".jpg", "image/jpeg"],
+  [".jpeg", "image/jpeg"],
+  [".webp", "image/webp"],
+  [".ico", "image/x-icon"],
+  [".txt", "text/plain; charset=utf-8"],
+  [".woff", "font/woff"],
+  [".woff2", "font/woff2"],
 ]);
 
 const ECOTRACE_SYSTEM_PROMPT = `
@@ -86,85 +86,92 @@ Rules:
 
 function sendJson(res, statusCode, payload) {
   res.writeHead(statusCode, {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'no-store'
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
   });
   res.end(JSON.stringify(payload));
 }
 
 function readJsonBody(req) {
   return new Promise((resolveBody, rejectBody) => {
-    let raw = '';
-    req.on('data', (chunk) => {
+    let raw = "";
+    req.on("data", (chunk) => {
       raw += chunk;
       if (raw.length > MAX_BODY_SIZE) {
-        rejectBody(new Error('Request body too large'));
+        rejectBody(new Error("Request body too large"));
         req.destroy();
       }
     });
-    req.on('end', () => {
+    req.on("end", () => {
       try {
         resolveBody(raw ? JSON.parse(raw) : {});
       } catch (error) {
         rejectBody(error);
       }
     });
-    req.on('error', rejectBody);
+    req.on("error", rejectBody);
   });
 }
 
 async function proxyGemini(req, res, options) {
-  if (req.method !== 'POST') {
-    sendJson(res, 405, { error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    sendJson(res, 405, { error: "Method not allowed" });
     return;
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    sendJson(res, 503, { error: 'Gemini API key is not configured.' });
+    sendJson(res, 503, { error: "Gemini API key is not configured." });
     return;
   }
 
   try {
     const payload = await readJsonBody(req);
     const geminiResponse = await fetch(GEMINI_ENDPOINT, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'x-goog-api-key': apiKey,
-        'Content-Type': 'application/json'
+        "x-goog-api-key": apiKey,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         systemInstruction: {
-          parts: [{ text: options.systemPrompt }]
+          parts: [{ text: options.systemPrompt }],
         },
-        contents: [{
-          parts: [{
-            text: `${options.instruction}\n${JSON.stringify(payload)}`
-          }]
-        }],
+        contents: [
+          {
+            parts: [
+              {
+                text: `${options.instruction}\n${JSON.stringify(payload)}`,
+              },
+            ],
+          },
+        ],
         generationConfig: {
           temperature: options.temperature,
           maxOutputTokens: 900,
-          responseMimeType: 'application/json'
-        }
-      })
+          responseMimeType: "application/json",
+        },
+      }),
     });
 
     const data = await geminiResponse.json().catch(() => ({}));
     if (!geminiResponse.ok) {
-      sendJson(res, geminiResponse.status, { error: options.errorMessage, details: data });
+      sendJson(res, geminiResponse.status, {
+        error: options.errorMessage,
+        details: data,
+      });
       return;
     }
     sendJson(res, 200, data);
-  } catch (error) {
+  } catch (_error) {
     sendJson(res, 502, { error: options.fallbackError });
   }
 }
 
 function getSafeStaticPath(pathname) {
   const decoded = decodeURIComponent(pathname);
-  const requestedPath = decoded === '/' ? '/index.html' : decoded;
-  const normalized = normalize(requestedPath).replace(/^(\.\.[/\\])+/, '');
+  const requestedPath = decoded === "/" ? "/index.html" : decoded;
+  const normalized = normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
   const filePath = resolve(DIST_DIR, `.${normalized}`);
   return filePath.startsWith(DIST_DIR) ? filePath : INDEX_FILE;
 }
@@ -179,50 +186,61 @@ async function serveStatic(req, res, pathname) {
   }
 
   if (!fileStat) {
-    sendJson(res, 500, { error: 'EcoTrace build output is missing. Run npm run build before npm start.' });
+    sendJson(res, 500, {
+      error:
+        "EcoTrace build output is missing. Run npm run build before npm start.",
+    });
     return;
   }
 
-  const contentType = MIME_TYPES.get(extname(filePath).toLowerCase()) || 'application/octet-stream';
-  const isAsset = filePath.includes(`${join('dist', 'assets')}`);
+  const contentType =
+    MIME_TYPES.get(extname(filePath).toLowerCase()) ||
+    "application/octet-stream";
+  const isAsset = filePath.includes(`${join("dist", "assets")}`);
   res.writeHead(200, {
-    'Content-Type': contentType,
-    'Content-Length': fileStat.size,
-    'Cache-Control': isAsset ? 'public, max-age=31536000, immutable' : 'no-cache'
+    "Content-Type": contentType,
+    "Content-Length": fileStat.size,
+    "Cache-Control": isAsset
+      ? "public, max-age=31536000, immutable"
+      : "no-cache",
   });
   createReadStream(filePath).pipe(res);
 }
 
 async function handleRequest(req, res) {
-  const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+  const url = new URL(
+    req.url || "/",
+    `http://${req.headers.host || "localhost"}`,
+  );
 
-  if (url.pathname === '/health') {
+  if (url.pathname === "/health") {
     sendJson(res, 200, {
-      status: 'ok',
-      app: 'EcoTrace',
-      ai: process.env.GEMINI_API_KEY ? 'configured' : 'fallback'
+      status: "ok",
+      app: "EcoTrace",
+      ai: process.env.GEMINI_API_KEY ? "configured" : "fallback",
     });
     return;
   }
 
-  if (url.pathname === '/api/gemini-insights') {
+  if (url.pathname === "/api/gemini-insights") {
     await proxyGemini(req, res, {
       systemPrompt: ECOTRACE_SYSTEM_PROMPT,
-      instruction: 'Analyze this EcoTrace user state and return JSON only:',
+      instruction: "Analyze this EcoTrace user state and return JSON only:",
       temperature: 0.35,
-      errorMessage: 'Gemini request failed.',
-      fallbackError: 'Gemini proxy failed.'
+      errorMessage: "Gemini request failed.",
+      fallbackError: "Gemini proxy failed.",
     });
     return;
   }
 
-  if (url.pathname === '/api/gemini-chat') {
+  if (url.pathname === "/api/gemini-chat") {
     await proxyGemini(req, res, {
       systemPrompt: ECOTRACE_CHAT_SYSTEM_PROMPT,
-      instruction: 'Answer this EcoTrace user question from the provided live app state and return JSON only:',
+      instruction:
+        "Answer this EcoTrace user question from the provided live app state and return JSON only:",
       temperature: 0.45,
-      errorMessage: 'Gemini chat request failed.',
-      fallbackError: 'Gemini chat proxy failed.'
+      errorMessage: "Gemini chat request failed.",
+      fallbackError: "Gemini chat proxy failed.",
     });
     return;
   }
@@ -231,14 +249,16 @@ async function handleRequest(req, res) {
 }
 
 if (!existsSync(INDEX_FILE)) {
-  console.error('EcoTrace build output is missing. Run npm run build before npm start.');
+  console.error(
+    "EcoTrace build output is missing. Run npm run build before npm start.",
+  );
   process.exit(1);
 }
 
 const server = createServer((req, res) => {
   handleRequest(req, res).catch((error) => {
     console.error(error);
-    sendJson(res, 500, { error: 'EcoTrace server failed.' });
+    sendJson(res, 500, { error: "EcoTrace server failed." });
   });
 });
 
@@ -246,10 +266,10 @@ server.listen(PORT, HOST, () => {
   console.log(`EcoTrace listening on http://${HOST}:${PORT}`);
 });
 
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
   server.close(() => process.exit(0));
 });
 
-process.on('SIGINT', () => {
+process.on("SIGINT", () => {
   server.close(() => process.exit(0));
 });

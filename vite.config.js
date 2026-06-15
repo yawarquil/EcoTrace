@@ -1,7 +1,7 @@
-import { defineConfig, loadEnv } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig, loadEnv } from "vite";
+import react from "@vitejs/plugin-react";
 
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MODEL = "gemini-2.5-flash";
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 const ECOTRACE_SYSTEM_PROMPT = `
@@ -60,123 +60,137 @@ Rules:
 
 function sendJson(res, status, payload) {
   res.statusCode = status;
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.end(JSON.stringify(payload));
 }
 
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
-    let raw = '';
-    req.on('data', (chunk) => {
+    let raw = "";
+    req.on("data", (chunk) => {
       raw += chunk;
       if (raw.length > 120_000) {
-        reject(new Error('Request body too large'));
+        reject(new Error("Request body too large"));
         req.destroy();
       }
     });
-    req.on('end', () => {
+    req.on("end", () => {
       try {
         resolve(raw ? JSON.parse(raw) : {});
       } catch (error) {
         reject(error);
       }
     });
-    req.on('error', reject);
+    req.on("error", reject);
   });
 }
 
 function createGeminiInsightsHandler(apiKey) {
   return async (req, res) => {
-    if (req.method !== 'POST') {
-      sendJson(res, 405, { error: 'Method not allowed' });
+    if (req.method !== "POST") {
+      sendJson(res, 405, { error: "Method not allowed" });
       return;
     }
     if (!apiKey) {
-      sendJson(res, 503, { error: 'Gemini API key is not configured.' });
+      sendJson(res, 503, { error: "Gemini API key is not configured." });
       return;
     }
 
     try {
       const payload = await readJsonBody(req);
       const geminiResponse = await fetch(GEMINI_ENDPOINT, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-goog-api-key': apiKey,
-          'Content-Type': 'application/json'
+          "x-goog-api-key": apiKey,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           systemInstruction: {
-            parts: [{ text: ECOTRACE_SYSTEM_PROMPT }]
+            parts: [{ text: ECOTRACE_SYSTEM_PROMPT }],
           },
-          contents: [{
-            parts: [{
-              text: `Analyze this EcoTrace user state and return JSON only:\n${JSON.stringify(payload)}`
-            }]
-          }],
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Analyze this EcoTrace user state and return JSON only:\n${JSON.stringify(payload)}`,
+                },
+              ],
+            },
+          ],
           generationConfig: {
             temperature: 0.35,
             maxOutputTokens: 900,
-            responseMimeType: 'application/json'
-          }
-        })
+            responseMimeType: "application/json",
+          },
+        }),
       });
 
       const data = await geminiResponse.json().catch(() => ({}));
       if (!geminiResponse.ok) {
-        sendJson(res, geminiResponse.status, { error: 'Gemini request failed.', details: data });
+        sendJson(res, geminiResponse.status, {
+          error: "Gemini request failed.",
+          details: data,
+        });
         return;
       }
       sendJson(res, 200, data);
-    } catch (error) {
-      sendJson(res, 502, { error: 'Gemini proxy failed.' });
+    } catch (_error) {
+      sendJson(res, 502, { error: "Gemini proxy failed." });
     }
   };
 }
 
 function createGeminiChatHandler(apiKey) {
   return async (req, res) => {
-    if (req.method !== 'POST') {
-      sendJson(res, 405, { error: 'Method not allowed' });
+    if (req.method !== "POST") {
+      sendJson(res, 405, { error: "Method not allowed" });
       return;
     }
     if (!apiKey) {
-      sendJson(res, 503, { error: 'Gemini API key is not configured.' });
+      sendJson(res, 503, { error: "Gemini API key is not configured." });
       return;
     }
 
     try {
       const payload = await readJsonBody(req);
       const geminiResponse = await fetch(GEMINI_ENDPOINT, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'x-goog-api-key': apiKey,
-          'Content-Type': 'application/json'
+          "x-goog-api-key": apiKey,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           systemInstruction: {
-            parts: [{ text: ECOTRACE_CHAT_SYSTEM_PROMPT }]
+            parts: [{ text: ECOTRACE_CHAT_SYSTEM_PROMPT }],
           },
-          contents: [{
-            parts: [{
-              text: `Answer this EcoTrace user question from the provided live app state and return JSON only:\n${JSON.stringify(payload)}`
-            }]
-          }],
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Answer this EcoTrace user question from the provided live app state and return JSON only:\n${JSON.stringify(payload)}`,
+                },
+              ],
+            },
+          ],
           generationConfig: {
             temperature: 0.45,
             maxOutputTokens: 900,
-            responseMimeType: 'application/json'
-          }
-        })
+            responseMimeType: "application/json",
+          },
+        }),
       });
 
       const data = await geminiResponse.json().catch(() => ({}));
       if (!geminiResponse.ok) {
-        sendJson(res, geminiResponse.status, { error: 'Gemini chat request failed.', details: data });
+        sendJson(res, geminiResponse.status, {
+          error: "Gemini chat request failed.",
+          details: data,
+        });
         return;
       }
       sendJson(res, 200, data);
-    } catch (error) {
-      sendJson(res, 502, { error: 'Gemini chat proxy failed.' });
+    } catch (_error) {
+      sendJson(res, 502, { error: "Gemini chat proxy failed." });
     }
   };
 }
@@ -185,22 +199,22 @@ function ecotraceGeminiProxy(apiKey) {
   const insightsHandler = createGeminiInsightsHandler(apiKey);
   const chatHandler = createGeminiChatHandler(apiKey);
   return {
-    name: 'ecotrace-gemini-insights-proxy',
+    name: "ecotrace-gemini-insights-proxy",
     configureServer(server) {
-      server.middlewares.use('/api/gemini-insights', insightsHandler);
-      server.middlewares.use('/api/gemini-chat', chatHandler);
+      server.middlewares.use("/api/gemini-insights", insightsHandler);
+      server.middlewares.use("/api/gemini-chat", chatHandler);
     },
     configurePreviewServer(server) {
-      server.middlewares.use('/api/gemini-insights', insightsHandler);
-      server.middlewares.use('/api/gemini-chat', chatHandler);
-    }
+      server.middlewares.use("/api/gemini-insights", insightsHandler);
+      server.middlewares.use("/api/gemini-chat", chatHandler);
+    },
   };
 }
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+  const env = loadEnv(mode, process.cwd(), "");
   return {
-    base: './',
-    plugins: [react(), ecotraceGeminiProxy(env.GEMINI_API_KEY)]
+    base: "./",
+    plugins: [react(), ecotraceGeminiProxy(env.GEMINI_API_KEY)],
   };
 });
