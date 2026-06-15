@@ -21,10 +21,10 @@
   </style>
   <rect class="bg" width="1200" height="300" rx="28"/>
   <rect x="30" y="28" width="1140" height="244" rx="28" fill="#f3efe5"/>
-  <path class="path" d="M195 150H1000" fill="none" stroke="#01696f" stroke-width="5" stroke-linecap="round"/>
+  <path class="path" d="M152 160H1048" fill="none" stroke="#01696f" stroke-width="5" stroke-linecap="round"/>
 
-  <g class="node n1" transform="translate(70 82)">
-    <rect class="card" width="190" height="156" rx="22"/>
+  <g class="node n1" transform="translate(60 82)">
+    <rect class="card" width="184" height="156" rx="22"/>
     <rect x="24" y="24" width="44" height="44" rx="14" fill="#d8eeee"/>
     <path d="M38 47h22M49 36v22" stroke="#01696f" stroke-width="5" stroke-linecap="round"/>
     <text x="24" y="92" class="label">LOG</text>
@@ -32,27 +32,27 @@
     <text x="24" y="140" class="small">commute, meal, energy</text>
   </g>
 
-  <g class="node n2" transform="translate(300 82)">
-    <rect class="card" width="190" height="156" rx="22"/>
+  <g class="node n2" transform="translate(286 82)">
+    <rect class="card" width="184" height="156" rx="22"/>
     <circle cx="46" cy="46" r="25" fill="#f4e7c3"/>
     <path d="M35 52l10-18 11 25 10-18" fill="none" stroke="#b77b1d" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
     <text x="24" y="92" class="label">CALCULATE</text>
     <text x="24" y="118" class="title">CO2 impact</text>
-    <text x="24" y="140" class="small">factor math + alternatives</text>
+    <text x="24" y="140" class="small">factor math + swaps</text>
   </g>
 
-  <g class="node n3" transform="translate(530 82)">
-    <rect class="card" width="190" height="156" rx="22"/>
+  <g class="node n3" transform="translate(512 82)">
+    <rect class="card" width="184" height="156" rx="22"/>
     <rect x="24" y="24" width="62" height="44" rx="16" fill="#e5ddcc"/>
     <path d="M40 46h30M40 58h20" stroke="#10231d" stroke-width="4" stroke-linecap="round"/>
     <circle class="spark" cx="82" cy="30" r="8" fill="#01696f"/>
     <text x="24" y="92" class="label">COACH</text>
     <text x="24" y="118" class="title">Next move</text>
-    <text x="24" y="140" class="small">AI + fallback guidance</text>
+    <text x="24" y="140" class="small">AI + fallback coach</text>
   </g>
 
-  <g class="node n4" transform="translate(760 82)">
-    <rect class="card" width="190" height="156" rx="22"/>
+  <g class="node n4" transform="translate(738 82)">
+    <rect class="card" width="184" height="156" rx="22"/>
     <rect x="26" y="26" width="22" height="22" rx="6" fill="#2f7d45"/>
     <rect x="56" y="26" width="22" height="22" rx="6" fill="#28683d"/>
     <rect x="86" y="26" width="22" height="22" rx="6" fill="#47a862"/>
@@ -64,8 +64,8 @@
     <text x="24" y="150" class="small">heatmap + streaks</text>
   </g>
 
-  <g class="node n5" transform="translate(990 82)">
-    <rect class="card" width="140" height="156" rx="22"/>
+  <g class="node n5" transform="translate(964 82)">
+    <rect class="card" width="184" height="156" rx="22"/>
     <circle cx="48" cy="44" r="26" fill="#f4e7c3"/>
     <text x="48" y="51" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="15" font-weight="900" fill="#b77b1d">+XP</text>
     <text x="24" y="92" class="label">REWARD</text>

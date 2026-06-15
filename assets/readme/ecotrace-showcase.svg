@@ -19,6 +19,7 @@
     .title { font: 800 28px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; fill: var(--earth-50); }
     .label { font: 700 14px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; fill: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
     .body { font: 600 18px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; fill: var(--earth-50); }
+    .pillText { font: 800 16px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; fill: var(--earth-50); }
     .small { font: 600 13px ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; fill: var(--muted); }
     .card { fill: rgba(16,35,29,.92); stroke: rgba(251,250,245,.14); stroke-width: 1; }
     .soft { fill: rgba(251,250,245,.07); }
@@ -65,9 +66,9 @@
   <text x="128" y="82" class="title">EcoTrace</text>
   <rect x="806" y="52" width="128" height="44" rx="22" fill="rgba(251,250,245,.07)" stroke="rgba(251,250,245,.16)"/>
   <circle cx="832" cy="74" r="8" fill="#0c7b7f"/>
-  <text x="850" y="81" class="body" font-size="16">Score 96</text>
+  <text x="884" y="80" text-anchor="middle" class="pillText">Score 96</text>
   <rect x="950" y="52" width="148" height="44" rx="22" fill="rgba(251,250,245,.07)" stroke="rgba(251,250,245,.16)"/>
-  <text x="980" y="81" class="body" font-size="16">Level 3</text>
+  <text x="1024" y="80" text-anchor="middle" class="pillText">Level 3</text>
 
   <rect class="card" x="44" y="138" width="356" height="420" rx="24"/>
   <text x="72" y="178" class="label">Carbon score</text>

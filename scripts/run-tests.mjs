@@ -135,6 +135,16 @@ test('README includes animated product showcase assets', () => {
   });
 });
 
+test('README heatmap showcase uses an aligned 12-week grid', () => {
+  const svg = readFileSync(new URL('../assets/readme/heatmap-showcase.svg', import.meta.url), 'utf8');
+  assert.ok(svg.includes('data-weeks="12"'), 'heatmap should mark a 12-week grid');
+  assert.ok(svg.includes('data-days="7"'), 'heatmap should mark seven day rows');
+  assert.equal((svg.match(/class="cell/g) || []).length, 84, 'heatmap should render 84 blocks');
+  ['Mar', 'Apr', 'May', 'Jun'].forEach((month) => {
+    assert.ok(svg.includes(`>${month}</text>`), `${month} label missing`);
+  });
+});
+
 let passed = 0;
 for (const item of tests) {
   try {
