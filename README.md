@@ -161,7 +161,7 @@ npm test
 
 ## Deploy To Railway
 
-EcoTrace is ready for Railway through `railway.json`. Railway builds the app with `npm run build`, then serves the production bundle with `npm run start` on Railway's provided `$PORT`.
+EcoTrace is ready for Railway through `railway.json`. Railway builds the app with `npm run build`, then serves the production bundle with `npm run start` on Railway's provided `$PORT`. The production server exposes `/health` for Railway healthchecks.
 
 1. Push `main` to GitHub.
 2. Open Railway and create a new project.

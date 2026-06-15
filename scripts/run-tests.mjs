@@ -125,12 +125,17 @@ test('site metadata and success mark are polished', () => {
 test('Railway deployment config is production ready', () => {
   const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
   const railwayJson = JSON.parse(readFileSync(new URL('../railway.json', import.meta.url), 'utf8'));
+  const server = readFileSync(new URL('../server.mjs', import.meta.url), 'utf8');
   const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
 
-  assert.equal(packageJson.scripts.start, 'node scripts/start-preview.mjs');
+  assert.equal(packageJson.scripts.start, 'node server.mjs');
   assert.equal(railwayJson.build.buildCommand, 'npm run build');
   assert.equal(railwayJson.deploy.startCommand, 'npm run start');
-  assert.equal(railwayJson.deploy.healthcheckPath, '/');
+  assert.equal(railwayJson.deploy.healthcheckPath, '/health');
+  assert.ok(server.includes("server.listen(PORT, HOST"), 'server should bind to the Railway PORT');
+  assert.ok(server.includes("url.pathname === '/health'"), 'server should expose a health route');
+  assert.ok(server.includes("url.pathname === '/api/gemini-insights'"), 'server should expose AI insights route');
+  assert.ok(server.includes("url.pathname === '/api/gemini-chat'"), 'server should expose AI chat route');
   assert.ok(readme.includes('## Deploy To Railway'), 'README should document Railway deployment');
   assert.ok(readme.includes('GEMINI_API_KEY'), 'README should explain Railway Gemini variable');
   assert.ok(!existsSync(new URL('../.github/workflows/deploy-pages.yml', import.meta.url)), 'GitHub Pages workflow should be removed');
