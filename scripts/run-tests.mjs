@@ -137,11 +137,34 @@ test('README includes animated product showcase assets', () => {
 
 test('README heatmap showcase uses an aligned 12-week grid', () => {
   const svg = readFileSync(new URL('../assets/readme/heatmap-showcase.svg', import.meta.url), 'utf8');
+  const height = Number(svg.match(/height="(\d+)"/)?.[1] || 0);
+  const gridBottom = 198 + (6 * 70) + 56;
   assert.ok(svg.includes('data-weeks="12"'), 'heatmap should mark a 12-week grid');
   assert.ok(svg.includes('data-days="7"'), 'heatmap should mark seven day rows');
   assert.equal((svg.match(/class="cell/g) || []).length, 84, 'heatmap should render 84 blocks');
+  assert.ok(height >= gridBottom + 40, 'heatmap canvas should not clip the final row');
   ['Mar', 'Apr', 'May', 'Jun'].forEach((month) => {
     assert.ok(svg.includes(`>${month}</text>`), `${month} label missing`);
+  });
+});
+
+test('README SVG transform animations do not override placement transforms', () => {
+  const assets = [
+    '../assets/readme/ecotrace-showcase.svg',
+    '../assets/readme/heatmap-showcase.svg',
+    '../assets/readme/product-loop.svg'
+  ];
+  assets.forEach((asset) => {
+    const svg = readFileSync(new URL(asset, import.meta.url), 'utf8');
+    [
+      ['node', 'lift'],
+      ['cursor', 'scan'],
+      ['tooltip', 'tip']
+    ].forEach(([className, animationName]) => {
+      const hasAnimatedClass = new RegExp(`\\.${className}\\s*\\{[^}]*animation:\\s*${animationName}`).test(svg);
+      const placedElement = new RegExp(`class="[^"]*\\b${className}\\b[^"]*"[^>]*transform="translate`).test(svg);
+      assert.ok(!(hasAnimatedClass && placedElement), `${asset} animates transform on placed .${className} elements`);
+    });
   });
 });
 

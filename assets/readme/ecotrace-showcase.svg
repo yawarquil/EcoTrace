@@ -135,7 +135,7 @@
 
   <rect class="card" x="804" y="138" width="352" height="420" rx="24"/>
   <text x="832" y="178" class="label">Action loop</text>
-  <path class="line-path" d="M836 302C880 230 946 226 986 286S1082 366 1128 276" fill="none" stroke="#0c7b7f" stroke-width="5" stroke-linecap="round"/>
+  <path class="line-path" d="M836 300C884 286 926 286 972 300S1078 314 1128 292" fill="none" stroke="#0c7b7f" stroke-width="5" stroke-linecap="round"/>
   <rect x="836" y="210" width="286" height="74" rx="18" class="soft"/>
   <path class="task-check" d="M862 247l13 13 28-33" fill="none" stroke="#2f7d45" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
   <text x="922" y="243" class="body">Complete daily task</text>
