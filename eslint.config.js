@@ -1,9 +1,15 @@
 import js from "@eslint/js";
+import { FlatCompat } from "@eslint/eslintrc";
 import globals from "globals";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import tsParser from "@typescript-eslint/parser";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
-import nextPlugin from "@next/eslint-plugin-next";
 import prettierConfig from "eslint-config-prettier";
+
+const compat = new FlatCompat({
+  baseDirectory: dirname(fileURLToPath(import.meta.url)),
+});
 
 const unusedVarsRule = [
   "error",
@@ -14,7 +20,7 @@ const unusedVarsRule = [
   },
 ];
 
-export default [
+const eslintConfig = [
   {
     ignores: [
       "dist/**",
@@ -29,6 +35,7 @@ export default [
     ],
   },
   js.configs.recommended,
+  ...compat.extends("next/core-web-vitals"),
   // Next.js recommended rules (lints ALL app/src source).
   {
     files: ["**/*.{ts,tsx}"],
@@ -48,12 +55,9 @@ export default [
       },
     },
     plugins: {
-      "@next/next": nextPlugin,
       "@typescript-eslint": tsPlugin,
     },
     rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs["core-web-vitals"].rules,
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": unusedVarsRule,
       // Explicit: no escape-hatch any, no need for prop spreading warnings to block.
@@ -72,3 +76,5 @@ export default [
   },
   prettierConfig,
 ];
+
+export default eslintConfig;
