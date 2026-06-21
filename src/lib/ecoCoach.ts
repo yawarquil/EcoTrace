@@ -189,7 +189,7 @@ export function parseGeminiChatReply(
   const obj = raw as Record<string, unknown>;
   let reply = sanitizeText(obj.reply, 600);
   // Strip trailing commas/colons/dashes so the reply ends cleanly.
-  reply = reply.replace(/[\s,;:—\-]+$/, '');
+  reply = reply.replace(/[\s,;:—-]+$/, '');
   if (!reply) {
     return { ...fallback, source: 'fallback' };
   }

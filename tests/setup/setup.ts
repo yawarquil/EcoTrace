@@ -10,6 +10,12 @@ import '@testing-library/jest-dom/vitest';
 import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
+type TestFrameRequestCallback = (time: number) => void;
+type TestIdleRequestCallback = (deadline: {
+  readonly didTimeout: boolean;
+  timeRemaining: () => number;
+}) => void;
+
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
@@ -31,8 +37,8 @@ if (!window.matchMedia) {
 
 // requestAnimationFrame fallback.
 if (!window.requestAnimationFrame) {
-  window.requestAnimationFrame = (cb: FrameRequestCallback) =>
-    window.setTimeout(() => cb(Date.now()), 16) as unknown as number;
+  window.requestAnimationFrame = ((cb: TestFrameRequestCallback) =>
+    window.setTimeout(() => cb(Date.now()), 16) as unknown as number) as typeof window.requestAnimationFrame;
   window.cancelAnimationFrame = (handle: number) => window.clearTimeout(handle);
 }
 
@@ -63,7 +69,10 @@ window.IntersectionObserver = vi.fn().mockImplementation(() => ({
 })) as unknown as typeof IntersectionObserver;
 
 // requestIdleCallback fallback.
-window.requestIdleCallback = ((cb: IdleRequestCallback) =>
-  window.setTimeout(() => cb({ didTimeout: false, timeRemaining: () => 0 }) as IdleDeadline, 1)) as typeof window.requestIdleCallback;
+window.requestIdleCallback = ((cb: TestIdleRequestCallback) =>
+  window.setTimeout(
+    () => cb({ didTimeout: false, timeRemaining: () => 0 }),
+    1,
+  )) as typeof window.requestIdleCallback;
 window.cancelIdleCallback = ((handle: number) =>
   window.clearTimeout(handle)) as typeof window.cancelIdleCallback;

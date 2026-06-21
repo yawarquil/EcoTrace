@@ -1,7 +1,8 @@
 import js from "@eslint/js";
 import globals from "globals";
-import tseslint from "typescript-eslint";
-import nextPlugin from "eslint-plugin-next";
+import tsParser from "@typescript-eslint/parser";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import nextPlugin from "@next/eslint-plugin-next";
 import prettierConfig from "eslint-config-prettier";
 
 const unusedVarsRule = [
@@ -27,22 +28,14 @@ export default [
       "next-env.d.ts",
     ],
   },
-  ...tseslint.configs.recommended,
   js.configs.recommended,
   // Next.js recommended rules (lints ALL app/src source).
-  {
-    files: ["**/*.{ts,tsx}"],
-    plugins: { "@next/next": nextPlugin },
-    rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs["core-web-vitals"].rules,
-    },
-  },
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
+      parser: tsParser,
       globals: {
         ...globals.browser,
         ...globals.node,
@@ -54,8 +47,14 @@ export default [
         },
       },
     },
+    plugins: {
+      "@next/next": nextPlugin,
+      "@typescript-eslint": tsPlugin,
+    },
     rules: {
-      "no-unused-vars": unusedVarsRule,
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs["core-web-vitals"].rules,
+      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": unusedVarsRule,
       // Explicit: no escape-hatch any, no need for prop spreading warnings to block.
       "@typescript-eslint/no-explicit-any": "error",
