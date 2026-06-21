@@ -5827,18 +5827,26 @@
 
     function buildAIChatFallback(question, stats = computeStats(appState)) {
       const top = stats.topEmissionCategory || 'Transport';
-      const name = appState.profile.name || 'there';
+      const name = appState.profile.name && appState.profile.name !== 'EcoTrace User' ? appState.profile.name : 'there';
+      const q = String(question || '').toLowerCase();
       const latestEntry = getRecentEntriesForAI(1)[0];
       const recommendation = getPersonalizedInsights(appState)[0];
       if (!stats.hasEntries) {
+        const starterSuggestions = [
+          'What should I log first?',
+          'How is my score calculated?',
+          'What can I do today before logging?'
+        ];
+        let reply = `${name}, you can still chat with me before logging. I can help you choose a first activity, understand footprint estimates, or set a starter goal; once you add a real entry, I will switch from starter guidance to personalized patterns.`;
+        if (q.includes('score')) {
+          reply = `${name}, you can still use EcoTrace before your first log. The score rewards lower CO2, avoided emissions, and a consistent logging streak; today, add one commute, meal, home energy use, purchase, or trip so I can explain your score from real data.`;
+        } else if (q.includes('today') || q.includes('first') || q.includes('log')) {
+          reply = `${name}, you can still get useful coaching before your first log. Today, start with the activity you remember most clearly, such as a commute distance, one meal, home electricity, a purchase, or a planned trip; after that I can personalize patterns without guessing.`;
+        }
         return {
           source: 'fallback',
-          reply: `${name}, I do not have real activity logs for you yet, so I will not invent a footprint pattern. Start with one commute, meal, home energy use, purchase, or travel entry; then I can analyze your actual category mix, heatmap, goals, and next best action.`,
-          suggestions: [
-            'What should I log first?',
-            'Help me choose a first activity',
-            'What can I do today before logging?'
-          ]
+          reply,
+          suggestions: starterSuggestions
         };
       }
       const entryContext = latestEntry
@@ -6108,7 +6116,7 @@
     function renderAIInsightsPanel(stats) {
       const insightState = getAIInsightView(stats);
       const isLoading = insightState.status === 'loading';
-      const sourceLabel = insightState.source === 'gemini' ? 'Gemini 2.5 Flash' : 'Fallback engine';
+      const sourceLabel = insightState.source === 'gemini' ? 'Gemini 2.5 Flash-Lite' : 'Fallback engine';
       const statusLabel = isLoading ? 'Refreshing' : insightState.source === 'gemini' ? 'AI generated' : 'Always-on fallback';
       const updated = insightState.updatedAt ? `Updated ${new Date(insightState.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : 'Ready when Gemini responds';
       return `

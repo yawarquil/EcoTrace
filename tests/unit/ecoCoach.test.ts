@@ -73,14 +73,16 @@ describe('coachMessage', () => {
 });
 
 describe('buildChatFallback', () => {
-  it('asks for the first log when there are no entries', () => {
+  it('still gives useful starter coaching when there are no entries', () => {
     const state = createInitialState();
     const { reply, suggestions } = buildChatFallback(
-      'help',
+      'what can I do today before logging?',
       state,
       computeStats(state),
     );
-    expect(reply.toLowerCase()).toContain('log');
+    expect(reply.toLowerCase()).toContain('you can still');
+    expect(reply.toLowerCase()).toContain('today');
+    expect(reply.toLowerCase()).not.toContain("don't have any logged activities yet");
     expect(suggestions.length).toBeGreaterThan(0);
     expect(reply).toMatch(/[.!?]$/);
   });

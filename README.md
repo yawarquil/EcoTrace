@@ -28,13 +28,49 @@ EcoTrace is designed as a premium climate-tech dashboard, not a static calculato
 
 Live app: [https://your-ecotrace-app.up.railway.app/](https://your-ecotrace-app.up.railway.app/)
 
+## Real Screenshots
+
+These captures show the current EcoTrace UI in light and dark modes. The original SVG showcase assets are still included below for the product loop and visual system sections.
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="./assets/readme/dashboard-hero-light.png" alt="EcoTrace light mode dashboard hero with first climate signal and carbon score" width="100%">
+    </td>
+    <td width="50%">
+      <img src="./assets/readme/budget-runway-light.png" alt="EcoTrace light mode budget runway and weekly climate plan" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="./assets/readme/focus-actions-light.png" alt="EcoTrace light mode focus card with top emission sources and quick eco actions" width="100%">
+    </td>
+    <td width="50%">
+      <img src="./assets/readme/heatmap-light.png" alt="EcoTrace light mode weekly trend and activity heatmap" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="./assets/readme/insights-dark.png" alt="EcoTrace dark mode insights charts with monthly trend and category breakdown" width="100%">
+    </td>
+    <td width="50%">
+      <img src="./assets/readme/ai-chat-dark.png" alt="EcoTrace dark mode AI chat panel with empty-state coaching" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="./assets/readme/country-map-dark.png" alt="EcoTrace dark mode country footprint map" width="100%">
+    </td>
+  </tr>
+</table>
+
 ## Submission Evidence
 
 | Check | Evidence |
 | --- | --- |
 | Live deployment | Railway app responds at `/` and `/health` over HTTPS. |
 | Runtime | React 19, Vite 8, JavaScript plus typed evaluator contracts, CSS/SVG/Canvas visualizations, Node production server. |
-| AI integration | Gemini 2.5 Flash through server-side `/api/gemini-insights` and `/api/gemini-chat`; local fallback remains active without a key. |
+| AI integration | Gemini 2.5 Flash-Lite through server-side `/api/gemini-insights` and `/api/gemini-chat`; local fallback remains active without a key. |
 | Tests | `npm test`, `npm run test:e2e`, and `npm run test:visual` pass the local regression, browser, screenshot, DOM, and a11y snapshot gates. |
 | Build | `npm run build` completes and emits a ~537 KB JS bundle before gzip. |
 | Security audit | `npm audit --audit-level=moderate` returns 0 vulnerabilities. |

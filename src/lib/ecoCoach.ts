@@ -82,13 +82,26 @@ export function buildChatFallback(
   const q = question.toLowerCase();
 
   if (state.entries.length === 0) {
+    const starterSuggestions = [
+      'What should I log first?',
+      'How is my score calculated?',
+      'What is a good first goal?',
+    ];
+    if (q.includes('score')) {
+      return {
+        reply: `${name}, you can still use EcoTrace before your first log. The score rewards lower CO2, avoided emissions, and a consistent logging streak; today, add one commute, meal, home energy use, purchase, or trip so I can explain your score from real data.`,
+        suggestions: starterSuggestions,
+      };
+    }
+    if (q.includes('today') || q.includes('first') || q.includes('log')) {
+      return {
+        reply: `${name}, you can still get useful coaching before your first log. Today, start with the activity you remember most clearly, such as a commute distance, one meal, home electricity, a purchase, or a planned trip; after that I can personalize patterns without guessing.`,
+        suggestions: starterSuggestions,
+      };
+    }
     return {
-      reply: `${name}, I don't have any logged activities yet. Log your first everyday choice and I can give specific, data-grounded coaching on your biggest lever.`,
-      suggestions: [
-        'What should I log first?',
-        'How is my score calculated?',
-        'What is a good first goal?',
-      ],
+      reply: `${name}, you can still chat with me before logging. I can help you choose a first activity, understand footprint estimates, or set a starter goal; once you add a real entry, I will switch from starter guidance to personalized patterns.`,
+      suggestions: starterSuggestions,
     };
   }
 
