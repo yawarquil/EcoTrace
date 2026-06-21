@@ -1,9 +1,16 @@
 node_modules/
 dist/
 coverage/
+.next/
+out/
+build/
 playwright-report/
 test-results/
 *.log
 .env
 .env.*
 !.env.example
+
+# TypeScript incremental cache
+*.tsbuildinfo
+next-env.d.ts
